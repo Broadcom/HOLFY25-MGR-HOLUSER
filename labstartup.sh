@@ -6,7 +6,7 @@ git_pull() {
    cd "$1" || return
    ctr=0
    # stash uncommitted changes if not running in dev
-   if [[ $prod ]]; then
+   if [ $branch = "main" ];then
       echo "git stash local changes for prod." >> "${logfile}"
       git stash >> "${logfile}"
    else
@@ -17,7 +17,8 @@ git_pull() {
          echo "Could not perform git pull. Will attempt LabStartup with existing code." >> "${logfile}"
          break  # just break so labstartup such as it is will run
       fi
-      git pull origin master >> "${logfile}" 2>&1
+      git checkout $branch >> ${logfile} 2>&1
+      git pull origin $branch >> ${logfile} 2>&1
       if [[ $? -eq 0 ]]; then
         break
       else
@@ -36,12 +37,13 @@ git_pull() {
 }
 
 git_clone() {
-  cd "$1" || return
-  git init >> "${logfile}"
-  git remote add origin "$gitproject" >> "${logfile}"
-  echo "Performing git clone for repo ${vpodgit}" >> "${logfile}"
-  # git clone git@holgitlab.oc.vmware.com:hol-labs/2087-labs/8701.git
-  git clone "$gitproject" >> "${logfile}" 2>&1
+   cd "$1" || return
+   git init >> "${logfile}"
+   git remote add origin "$gitproject" >> "${logfile}"
+   echo "Performing git clone for repo ${vpodgit}" >> "${logfile}"
+   # git clone -b dev https://github.com/Broadcom/HOL-2501.git /vpodrepo/2025-labs/2501
+   echo "git clone -b $branch $gitproject $vpodgitdir" >> ${logfile}
+   git clone -b "$branch" "$gitproject" "$vpodgitdir" >> ${logfile} 2>&1
 }
 
 runlabstartup() {
@@ -198,25 +200,18 @@ fi
 year=$(echo "${vPod_SKU}" | cut -c5-6)
 index=$(echo "${vPod_SKU}" | cut -c7-8)
 
-# calculate the git server
-# DEBUG
-internalgit="10.138.147.254"
-externalgit="holgitlab.oc.vmware.com"
-
-if ! ssh -o ConnectTimeout=5 -T "git@${internalgit}"; then
-   gitserver=$externalgit
+cloud=$(/usr/bin/vmtoolsd --cmd 'info-get guestinfo.ovfEnv' 2>&1)
+holdev=$(echo "${cloud}" | grep -i hol-dev)
+if [ "${cloud}" = "No value found" ] || [ ! -z "${holdev}" ];then 
+   branch="dev"
 else
-   gitserver=$internalgit
+   branch="main"
 fi
-gitproject="git@${gitserver}:hol-labs/20${year}-labs/${year}${index}.git"
+
+gitproject="https://github.com/Broadcom/HOL-${year}${index}.git"
 
 # this is the 2nd git pull for lab-specific captain updates
-echo "Ready to pull updates for ${vPod_SKU} from HOL gitlab ${gitproject}." >> "${logfile}"
-
-prod=false
-if ! vmtoolsd --cmd 'info-get guestinfo.ovfEnv' | grep -iq 'HOL-Dev'; then
-   prod=true
-fi
+[ "$labtype" = "HOL" ] && echo "Ready to pull updates for ${vPod_SKU} from HOL gitlab ${gitproject}." >> ${logfile}
 
 yearrepo="${gitdrive}/20${year}-labs"
 yeargit="${yearrepo}/.git"
