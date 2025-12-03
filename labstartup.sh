@@ -202,9 +202,12 @@ index=$(echo "${vPod_SKU}" | cut -c7-8)
 
 cloud=$(/usr/bin/vmtoolsd --cmd 'info-get guestinfo.ovfEnv' 2>&1)
 holdev=$(echo "${cloud}" | grep -i hol-dev)
+echo "labstartup.sh detected cloud: ${cloud} and holdev: ${holdev}" >> "${logfile}"
 if [ "${cloud}" = "No value found" ] || [ ! -z "${holdev}" ];then 
+   echo "labstartup.sh detected dev cloud. Setting branch to dev." >> "${logfile}"  
    branch="dev"
 else
+   echo "labstartup.sh detected prod cloud. Setting branch to main." >> "${logfile}"
    branch="main"
 fi
 
