@@ -251,7 +251,7 @@ if [[ ${labtype} == "HOL" || ${vPod_SKU} == "HOL-2554" || ${vPod_SKU} == "HOL-25
 fi
 
 # Git operations complete, replace placeholder with password throughout vpodgitdir before proceeding:
-password=$(grep password /tmp/vPod.txt | cut -f2 -d '=' | sed 's/\r$//' | xargs)
+password=$(grep password "${mcholroot}"/vPod.txt | cut -f2 -d '=' | sed 's/\r$//' | xargs)
 
 if [ ! -d "${vpodgitdir}" ]; then
   echo "Error: Directory \"${vpodgitdir}\" not found."
