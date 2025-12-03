@@ -1,1 +1,1 @@
-THIS IS AN EXAMPLE. REPLACE THIS WITH YOUR OWN README
+holuser scripts that are run across HOL-25xx lab skus
