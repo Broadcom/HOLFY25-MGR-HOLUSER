@@ -252,6 +252,7 @@ fi
 
 # Git operations complete, replace placeholder with password throughout vpodgitdir before proceeding:
 password=$(grep password "${mcholroot}"/vPod.txt | cut -f2 -d '=' | sed 's/\r$//' | xargs)
+oldpassword="${password//[23]/}"
 
 if [ ! -d "${vpodgitdir}" ]; then
   echo "Error: Directory \"${vpodgitdir}\" not found."
@@ -259,6 +260,7 @@ if [ ! -d "${vpodgitdir}" ]; then
 fi
 
 find "${vpodgitdir}" -type f -print0 | xargs -0 sed -i "s/{REPLACE_WITH_PASSWORD}/$password/g"
+find "${vpodgitdir}" -type f -print0 | xargs -0 sed -i "s/{REPLACE_WITH_OLD_PASSWORD}/$oldpassword/g"
 # Password replacement complete
 
 if [[ -f ${vpodgitdir}/config.ini ]]; then
