@@ -296,7 +296,7 @@ def init(**kwargs):
     if 'odyssey' in config['VPOD'].keys():
         if config.get('VPOD', 'odyssey').casefold() == 'true'.casefold():
             odyssey = True
-    
+    write_output('===== Detected Password: single_password: {single_password}, password: {password}, rtrpassword: {rtrpassword} =====')
     # check the router if indicated
     if chkrouter:
         # verify proxy resolves in DNS
