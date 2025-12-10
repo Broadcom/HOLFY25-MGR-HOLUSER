@@ -545,7 +545,7 @@ def write_vpodprogress(display, code, **kwargs):
     if code == 'READY':
         # let the router know.
         os.system('echo "" > /tmp/ready')
-        scp('/tmp/ready', f'holuser@router{dom}:/tmp/holorouter', password)
+        scp('/tmp/ready', f'holuser@router{dom}:/tmp/vpodrouter', password)
     now = datetime.datetime.now()
     if 'FAIL' in code or 'TIMEOUT' in code:
         if 'fail' not in display.lower():
