@@ -10,7 +10,9 @@ git_pull() {
       echo "git stash local changes for prod." >> "${logfile}"
       git stash >> "${logfile}"
    else
-      echo "Not doing git stash due to HOL-Dev." >> "${logfile}"
+      #echo "Not doing git stash due to HOL-Dev." >> "${logfile}"
+      cho "git stash local changes for hol-dev." >> "${logfile}"
+      git stash >> "${logfile}"
    fi
    while true; do
       if [[ $ctr -gt 30 ]]; then
