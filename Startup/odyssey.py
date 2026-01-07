@@ -126,6 +126,8 @@ if run_odyssey_prep and lsf.odyssey and not lsf.labcheck:  # VLP deployments and
         os.system(f'rm {lsf.mc}/{odyssey_dst}/WMC-Odyssey-prep.ps1')
         os.system(f'mv {lsf.mc}/{odyssey_dst}/odyssey-prep.log /tmp')
         lsf.write_output('Scheduling SetGuestinfoOvfEnv task to run in 5 minutes. Please stand by...', logfile=lsf.logfile)
+        os.system(f'cp {lsf.holroot}/Tools/CreateTask.ps1 {lsf.mc}/hol/Tools/')
+        os.system(f'cp {lsf.holroot}/Tools/SetGuestinfoOvfEnv.ps1 {lsf.mc}/hol/Tools/')
         command = f'pwsh C:\\hol\\Tools\\CreateTask.ps1 > C:\\hol\\CreateTask.log'
         lsf.write_output(f'Running command: {command}', logfile=lsf.logfile)
         result = lsf.runwincmd(command, 'mainconsole', 'Administrator', lsf.password, logfile=lsf.logfile)
