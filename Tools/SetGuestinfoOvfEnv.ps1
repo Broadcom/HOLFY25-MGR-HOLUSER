@@ -32,20 +32,15 @@ Write-Output "File $filePath found. Processing..." | Out-File -Append $logFile
 guestinfo = Get-Content -Path $filePath -Raw
 
 # Run the VMware command with parameters
-if (Test-Path $vmwareCommand) {
-  Write-Output "Executing VMware command: $runCommand" | Out-File -Append $logFile
-  & $runCommand # Use call operator & to execute
-  if ($LASTEXITCODE -eq 0) {
-    Write-Output "VMware command executed successfully." | Out-File -Append $logFile
-  }
-  else {
-    Write-Output "VMware command failed with exit code $LASTEXITCODE." | Out-File -Append $logFile
-  }
+Write-Output "Executing VMware command: $runCommand" | Out-File -Append $logFile
+& "C:\Program Files\VMware\VMware Tools\vmtoolsd.exe" --cmd "info-set guestinfo.ovfEnv $guestinfo"
+if ($LASTEXITCODE -eq 0) {
+  Write-Output "VMware command executed successfully." | Out-File -Append $logFile
 }
 else {
-  Write-Output "VMware command not found at $vmwareCommand." | Out-File -Append $logFile
-  exit 1
+  Write-Output "VMware command failed with exit code $LASTEXITCODE." | Out-File -Append $logFile
 }
+
 
 # Clean up (optional)
 # Remove-Item $filePath
