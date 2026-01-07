@@ -123,6 +123,15 @@ if run_odyssey_prep and lsf.odyssey and not lsf.labcheck:  # VLP deployments and
             lsf.write_output(line.strip(), logfile=lsf.logfile)
         os.system(f'rm {lsf.mc}/{odyssey_dst}/WMC-Odyssey-prep.ps1')
         os.system(f'mv {lsf.mc}/{odyssey_dst}/odyssey-prep.log /tmp')
+        # read the raw contents of /tmp/guestinfo.ovfEnv into a variable.
+        with open('/tmp/guestinfo.ovfEnv', 'r') as f:
+            guestinfo = f.read()
+        f.close()
+        # Setup a new command variable like line 116 to run the following: C:\Program Files\VMware\VMware Tools\vmtoolsd.exe —cmd "info-set guestinfo.ovfEnv $guestinfo"
+        # Specify the full path to the vmtoolsd executable
+        command = f'C:\\Program Files\\VMware\\VMware Tools\vmtoolsd.exe --cmd "info-set guestinfo.odyssey_guestinfo {guestinfo}"'
+        lsf.write_output(f'Running command: {command}', logfile=lsf.logfile)
+        result = lsf.runwincmd(command, 'mainconsole', 'Administrator', lsf.password, logfile=lsf.logfile)
     elif lsf.LMC:
         # copy the launcher
         os.system(f'cp {lsf.holroot}/Tools/{odyssey_launcher} {lsf.mc}/{odyssey_dst}/{odyssey_launcher}')
