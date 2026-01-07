@@ -29,7 +29,7 @@ while (-not (Test-Path $filePath)) {
 Write-Output "File $filePath found. Processing..." | Out-File -Append $logFile
 
 # Add logic here to process the file
-guestinfo = Get-Content -Path $filePath -Raw
+$guestinfo = Get-Content -Path $filePath -Raw
 
 # Run the VMware command with parameters
 Write-Output "Executing VMware command: $runCommand" | Out-File -Append $logFile
