@@ -1,4 +1,4 @@
-$action = New-ScheduledTaskAction -Execute "pwsh.exe" -Argument "-File C:\hol\Tools\SetGuestinfoOvfEnv.ps1"
+$action = New-ScheduledTaskAction -Execute "pwsh.exe" -Argument "-File C:\hol\Tools\SetGuestinfoOvfEnv.ps1 -WindowStyle Hidden"
 # Create a trigger set to run 5 minutes from now.
 $trigger = New-ScheduledTaskTrigger -At (Get-Date).AddMinutes(2) -Once
 
