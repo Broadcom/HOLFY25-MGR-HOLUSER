@@ -1,4 +1,5 @@
-# odyssey.py - version v1.7 - 23-February 2024
+# odyssey.py - version v1.8 - 07-January 2026 - add guestinfo.ovfEnv to Odyssey client
+# - version v1.7 - 23-February 2024
 import sys
 import lsfunctions as lsf
 import os
@@ -114,6 +115,7 @@ if run_odyssey_prep and lsf.odyssey and not lsf.labcheck:  # VLP deployments and
         os.system(f'cp {lsf.holroot}/Tools/WMC-Odyssey-prep.ps1 {lsf.mc}/{odyssey_dst}/')
         # C:\Program Files\PowerShell\7\pwsh.exe
         command = 'pwsh C:\\Users\\Administrator\\WMC-Odyssey-prep.ps1 > C:\\Users\\Administrator\\odyssey-prep.log'
+        os.system(f'cp /tmp/guestinfo.ovfEnv {lsf.mc}/hol/guestinfo.ovfEnv')
         lsf.write_output('Running WMC-Odyssey-prep.ps1 on mainconsole. Please stand by...', logfile=lsf.logfile)
         result = lsf.runwincmd(command, 'mainconsole', 'Administrator', lsf.password, logfile=lsf.logfile)
         with open(f'{lsf.mc}/{odyssey_dst}/odyssey-prep.log', 'r') as ologfile:
@@ -123,13 +125,8 @@ if run_odyssey_prep and lsf.odyssey and not lsf.labcheck:  # VLP deployments and
             lsf.write_output(line.strip(), logfile=lsf.logfile)
         os.system(f'rm {lsf.mc}/{odyssey_dst}/WMC-Odyssey-prep.ps1')
         os.system(f'mv {lsf.mc}/{odyssey_dst}/odyssey-prep.log /tmp')
-        # read the raw contents of /tmp/guestinfo.ovfEnv into a variable.
-        with open('/tmp/guestinfo.ovfEnv', 'r') as f:
-            guestinfo = f.read()
-        f.close()
-        # Setup a new command variable like line 116 to run the following: C:\Program Files\VMware\VMware Tools\vmtoolsd.exe —cmd "info-set guestinfo.ovfEnv $guestinfo"
-        # Specify the full path to the vmtoolsd executable
-        command = f'C:\\Program Files\\VMware\\VMware Tools\vmtoolsd.exe --cmd "info-set guestinfo.odyssey_guestinfo {guestinfo}"'
+        lsf.write_output('Scheduling SetGuestinfoOvfEnv task to run in 5 minutes. Please stand by...', logfile=lsf.logfile)
+        command = f'pwsh C:\\hol\\Tools\\CreateTask.ps1 > C:\\hol\\CreateTask.log'
         lsf.write_output(f'Running command: {command}', logfile=lsf.logfile)
         result = lsf.runwincmd(command, 'mainconsole', 'Administrator', lsf.password, logfile=lsf.logfile)
     elif lsf.LMC:
