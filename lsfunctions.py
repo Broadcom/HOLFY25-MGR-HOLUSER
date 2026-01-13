@@ -1630,18 +1630,19 @@ def managelinuxservice(action, server, service, waitsec, pw):
     if pw == '':
         pw = password
 
-    try:
-        ret = ssh('uname -v', cred, pw)
-        logging.debug(f'{ret.stdout} {ret.stderr}')
-        if ret.stdout.find('photon') != -1:
-            write_output('Operating System is Photon')
-            if action == 'query':
-                ret = managevcsaservice('status', server, service, pw)
-            else:
-                ret = managevcsaservice(action, server, service, pw)
-            return ret
-    except Exception as e:
-        write_output(f'Failed to run uname -v on {server} -- {e}')
+    if server not in ('vcd-01a.vcf.sddc.lab', 'vcd-01b.vcf.sddc.lab'):
+        try:
+            ret = ssh('uname -v', cred, pw)
+            logging.debug(f'{ret.stdout} {ret.stderr}')
+            if ret.stdout.find('photon') != -1:
+                write_output('Operating System is Photon')
+                if action == 'query':
+                    ret = managevcsaservice('status', server, service, pw)
+                else:
+                    ret = managevcsaservice(action, server, service, pw)
+                return ret
+        except Exception as e:
+            write_output(f'Failed to run uname -v on {server} -- {e}')
 
     # non-photon Linux machine
     try:
