@@ -11,7 +11,7 @@ git_pull() {
       git stash >> "${logfile}"
    else
       #echo "Not doing git stash due to HOL-Dev." >> "${logfile}"
-      cho "git stash local changes for hol-dev." >> "${logfile}"
+      echo "git stash local changes for hol-dev." >> "${logfile}"
       git stash >> "${logfile}"
    fi
    while true; do
